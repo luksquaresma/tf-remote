@@ -2,20 +2,35 @@ let
   pkgs = import <nixpkgs> {
     config = {
       allowUnfree = true;
-      # cudaSupport = true;  # If you need CUDA
+      cudaSupport = false;
     };
   };
 in
-
 pkgs.mkShell {
-  buildInputs = [
-    pkgs.python3
-    pkgs.python3Packages.tensorflow
-    pkgs.python311Packages.pandas
-    pkgs.python311Packages.diagrams
-    pkgs.python311Packages.jupyter
-    pkgs.python311Packages.nbconvert
+  name = "tf-remote";
+  venvDir = "./.venv";
+
+buildInputs = with pkgs; [
+    python3Packages.pip
+    python3Packages.build
+    python3Packages.twine
+    python3Packages.setuptools
   ];
 
-  shellHook = ''code;'';
+  # Run this command, only after creating the virtual environment
+  postVenvCreation = ''
+    unset SOURCE_DATE_EPOCH
+    pip install -r requirements.txt
+  '';
+
+  # Now we can execute any commands within the virtual environment.
+  # This is optional and can be left out to run pip manually.
+  postShellHook = ''
+    # allow pip to install wheels
+    unset SOURCE_DATE_EPOCH
+  '';
+  
+  shellHook = ''
+    code .
+  '';	
 }
