@@ -1,0 +1,14 @@
+CREATE TABLE Data (
+   id INTEGER,
+   PRIMARY KEY(id)
+);
+
+CREATE TABLE Jobs (
+   id INTEGER,
+   PRIMARY KEY(id)
+);
+
+CREATE TABLE DJIndex (
+   id INTEGER,
+   PRIMARY KEY(id)
+);

@@ -9,6 +9,7 @@ in
 pkgs.mkShell {
   name = "tf_remote_client";
   venvDir = "./.venv";
+  enableParallelBuilding = true;
 
 buildInputs = with pkgs; [
     pdm
