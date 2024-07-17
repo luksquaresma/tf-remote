@@ -38,7 +38,9 @@ pkgs.mkShell {
   shellHook = ''
     {
       {
+        echo "========================="
         echo "...Starting enviroment..."
+        echo "========================="
       } && {
         eval $(bash ${bash_utils_path} -r)
       } && {
@@ -48,12 +50,14 @@ pkgs.mkShell {
       } && {
         bash <(bash ${bash_utils_path} -s)
       } && {
-        echo "OK - Enviroment built!"
+        echo "======================"
+        echo "OK - Enviroment built!"; echo; echo;
       }
     } || {
       echo
+      echo "=================================="
       echo "ABORT - Failed to bild enviroment!"
-      echo "ABORT - Exiting now!"
+      echo "ABORT - Exiting now!"; echo; echo;
       exit
     }
   '';	

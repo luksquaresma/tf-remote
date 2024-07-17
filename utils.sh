@@ -95,7 +95,7 @@ EOF
 }
 
 reset_env_var() {
-    echo "unset $(get_env_var_name) $(get_env_var_name)_FALLBACK"
+    echo "unset $(get_env_var_name); unset $(get_env_var_name)_FALLBACK"
 }
 
 usage() {
@@ -112,32 +112,33 @@ usage() {
  echo "    -r, --reset          Returns the expression to reset the enviroment variables."
 }
 
-
-while getopts "hlcefsr" flag; do
-    case $flag in
-        h)
-            usage
-        ;;
-        l)
-            get_script_path
-        ;;
-        c)
-            get_current_path
-        ;;
-        e)
-            get_utils_env_var_expr
-        ;;
-        f)
-            get_utils_env_var_fallback_expr $2
-        ;;
-        s)
-            setup_utils_expr
-        ;;
-        r)
-            reset_env_var
-        ;;
-        \?)
-            echo "ABORT - Invalid option!"
-        ;;
-    esac
-done
+if ! [ $# -eq 0 ]; then
+    while getopts "hlcefsr" flag; do
+        case $flag in
+            h)
+                usage
+            ;;
+            l)
+                get_script_path
+            ;;
+            c)
+                get_current_path
+            ;;
+            e)
+                get_utils_env_var_expr
+            ;;
+            f)
+                get_utils_env_var_fallback_expr $2
+            ;;
+            s)
+                setup_utils_expr
+            ;;
+            r)
+                reset_env_var
+            ;;
+            \?)
+                echo "ABORT - Invalid option!"
+            ;;
+        esac
+    done
+fi

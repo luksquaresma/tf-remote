@@ -13,8 +13,8 @@ python_pkgs=(
 )
 
 
-source $UTILS_PATH
-cd $(get_script_path)
+source_wrapper() { source $UTILS_PATH; }
+source_wrapper; cd $(get_script_path)
 
 
 echo; echo "...PYTHON BUILD SCRIPT..."
