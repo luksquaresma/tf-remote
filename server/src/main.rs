@@ -1,22 +1,33 @@
-use axum::{
-    body::Body,
-    routing::get,
-    response::Json,
-    Router,
-};
-use serde_json::{Value, json};
+use axum::{response::IntoResponse, routing::get, Json, Router};
 
-// `&'static str` becomes a `200 OK` with `content-type: text/plain; charset=utf-8`
-async fn plain_text() -> &'static str {
-    "foo"
+async fn health_checker_handler() -> impl IntoResponse {
+    const MESSAGE: &str = "Build Simple CRUD API in Rust using Axum";
+
+    let json_response = serde_json::json!({
+        "status": "success",
+        "message": MESSAGE
+    });
+
+    Json(json_response)
 }
 
-// `Json` gives a content-type of `application/json` and works with any type
-// that implements `serde::Serialize`
-async fn json() -> Json<Value> {
-    Json(json!({ "data": 42 }))
+async fn get_status() -> impl IntoResponse {
+    const MESSAGE: &str = "Build Simple CRUD API in Rust using Axum";
+
+    let json_response = serde_json::json!({
+        "status": "success",
+        "message": MESSAGE
+    });
+
+    Json(json_response)
 }
 
-let app = Router::new()
-    .route("/plain_text", get(plain_text))
-    .route("/json", get(json));
+
+#[tokio::main]
+async fn main() {
+    let app = Router::new().route("/api/healthchecker", get(health_checker_handler));
+
+    println!("🚀 Server started successfully");
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:8000").await.unwrap();
+    axum::serve(listener, app).await.unwrap();
+}

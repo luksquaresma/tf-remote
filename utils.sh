@@ -1,7 +1,11 @@
 #!/bin/bash
 
-get_env_var_name() {
+get_utils_env_var_name() {
     echo "UTILS_PATH"
+}
+
+get_std_env_var_name() {
+    echo "STD_PATH"
 }
 
 fok() {
@@ -49,10 +53,6 @@ iterate_version_toml() {
 }
 
 get_current_path() {
-    echo "$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
-}
-
-get_current_path() {
     echo $(pwd)
 }
 
@@ -61,15 +61,16 @@ get_script_path() {
 }
 
 get_utils_env_var_expr() {
-    echo "export $(get_env_var_name)=\"$(get_script_path)\""
+    echo "export $(get_utils_env_var_name)=\"$(get_script_path)\"/utils.sh"
 }
 
 get_utils_env_var_fallback_expr() {
-    echo "export $(get_env_var_name)=\"$1\""
+    echo "export $(get_utils_env_var_name)=\"$1\"/utils.sh"
 }
 
 setup_utils_expr() {
     cat << 'EOF'
+        echo "INFO - TESTING ENVIROMENT VARIABLES"
         if [[ -n "$UTILS_PATH" ]]; then
             echo "INFO - Using default utils path from enviroment variable UTILS_PATH."
             source $UTILS_PATH
@@ -94,26 +95,36 @@ setup_utils_expr() {
 EOF
 }
 
-reset_env_var() {
-    echo "unset $(get_env_var_name); unset $(get_env_var_name)_FALLBACK"
+get_std_env_var_expr() {
+    echo "export $(get_std_env_var_name)=\"$(get_script_path)\"/std.toml"
 }
+
+reset_env_var() {
+    echo "unset $(get_utils_env_var_name); unset $(get_utils_env_var_name)_FALLBACK, unset $(get_std_env_var_name)"
+}
+
+
 
 usage() {
  echo; echo "Usage local utils [OPTIONS]"
  echo "Current loaded location: $(get_script_path)"
  echo
- echo "  Options:"
- echo "    -h, --help           Display this help message"
- echo "    -l, --location       Returns the current utils.sh file location"
- echo "    -c, --current        Returns the the path of the current running script."
- echo "    -e, --enviroment     Returns the expression for the enviroment variable setup."
- echo "    -f, --fallback       Returns the expression for the fallback enviroment variable setup."
- echo "    -s, --setup          Returns the expression for the enviroment setup procedure."
- echo "    -r, --reset          Returns the expression to reset the enviroment variables."
+ echo " Options:"
+ echo "  -h, --help        Display this help message"
+ echo "  -l, --location    Returns the current utils.sh file location"
+ echo "  -c, --current     Returns the the path of the current running script."
+ echo "  -e, --enviroment  Returns the expression for the utils enviroment variable setup."
+ echo "  -f, --fallback    Returns the expression for the fallback utils enviroment variable setup."
+ echo "  -s, --setup       Returns the expression for the enviroment setup check procedure."
+ echo "  -r, --reset       Returns the expression to reset the enviroment variables."
+ echo "  -u, --std env.    Returns the expression for the std enviroment variable setup."
+
+ echo
+ echo 
 }
 
 if ! [ $# -eq 0 ]; then
-    while getopts "hlcefsr" flag; do
+    while getopts "hlcefsru" flag; do
         case $flag in
             h)
                 usage
@@ -136,8 +147,12 @@ if ! [ $# -eq 0 ]; then
             r)
                 reset_env_var
             ;;
+            u)
+                get_std_env_var_expr
+            ;;
             \?)
                 echo "ABORT - Invalid option!"
+                exit 1
             ;;
         esac
     done

@@ -38,15 +38,20 @@ pkgs.mkShell {
   shellHook = ''
     {
       {
+        echo
         echo "========================="
         echo "...Starting enviroment..."
         echo "========================="
       } && {
         eval $(bash ${bash_utils_path} -r)
       } && {
-        eval $(bash ${bash_utils_path} -e)
+        {
+          eval $(bash ${bash_utils_path} -e)
+        } || {
+          eval $(bash ${bash_utils_path} -f ${bash_utils_path})
+        }
       } && {
-        eval $(bash ${bash_utils_path} -f ${bash_utils_path})
+        eval $(bash ${bash_utils_path} -u)
       } && {
         bash <(bash ${bash_utils_path} -s)
       } && {

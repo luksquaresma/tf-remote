@@ -1,0 +1,8 @@
+[api.endpoints]
+status  = "/status"
+data    = "/data"
+jobs    = "/jobs"
+
+[api.base]
+base_url= "http://localhost:8000"
+
